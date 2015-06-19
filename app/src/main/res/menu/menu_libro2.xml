@@ -2,8 +2,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="asc.bcn.alex.ebibgen.LibroActivity">
-    <item android:id="@+id/action_guardar_libro" android:title="@string/action_guardar"
-        android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_eliminar_libro" android:title="@string/action_eliminar"
+    <item android:id="@+id/action_eliminar" android:title="@string/action_eliminar"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

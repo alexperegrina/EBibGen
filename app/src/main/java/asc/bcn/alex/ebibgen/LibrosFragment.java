@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +51,7 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_libros, container, false);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -58,7 +61,7 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
 
         mLibrosAdapter = new LibrosAdapter(getActivity(),null,0);
 
-        View rootView = inflater.inflate(R.layout.fragment_libros, container, false);
+
 
 
         ListView listLibros = (ListView) rootView.findViewById(R.id.listView_libros);
@@ -74,6 +77,10 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
 //                            .setData(BibliografiaContract.ProyectoEntry.buildProyectoUri(
 //                                    cursor.getInt(COL_PROYECTO_ID)));
 //                    startActivity(intent);
+
+                    Intent intent = new Intent(getActivity(), LibroActivity.class);
+                    Utility.setPreferredIdLibro(getActivity(), cursor.getInt(COL_LIBRO_ID));
+                    startActivity(intent);
                 }
             }
         });
@@ -83,6 +90,7 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), LibroActivity.class);
+                Utility.setPreferredIdLibro(getActivity(), -1);
                 startActivity(intent);
             }
         });
@@ -90,6 +98,11 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        onUpdateProyecto();
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -101,17 +114,19 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Hacer la peticion para todo los libros del proyecto indicado.
 
-//        String sortOrder = BibliografiaContract.LibroEntry.COLUMN_TITULO + " ASC";
-//        String idProyecto = BibliografiaContract.getIdProyectoFromUri(mUri);
-//
-//        Uri librosUri = BibliografiaContract.LibroEntry.buildLibroWithIdProyecto(Long.parseLong(idProyecto));
-//        return new CursorLoader(getActivity(),
-//                librosUri,
-//                LIBRO_COLUMNS,
-//                null,
-//                null,
-//                sortOrder);
-        return null;
+        String sortOrder = BibliografiaContract.LibroEntry.COLUMN_TITULO + " ASC";
+        String idProyecto = BibliografiaContract.getIdProyectoFromUri(mUri);
+
+        Uri librosUri = BibliografiaContract.LibroEntry.buildLibroWithIdProyecto(Long.parseLong(idProyecto));
+
+        Log.e(LOG_TAG, librosUri.toString());
+        return new CursorLoader(getActivity(),
+                librosUri,
+                LIBRO_COLUMNS,
+                null,
+                null,
+                sortOrder);
+//        return null;
     }
 
     @Override
@@ -124,5 +139,7 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
         mLibrosAdapter.swapCursor(null);
     }
 
-
+    public void onUpdateProyecto() {
+        getLoaderManager().restartLoader(LIBRO_LOADER, null, this);
+    }
 }

@@ -1,5 +1,6 @@
 package asc.bcn.alex.ebibgen;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -37,6 +39,7 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
 
     private Uri mUri;
 
+
     private static final int PROYECTO_LOADER = 0;
 
     private EditText mTitulo;
@@ -47,7 +50,6 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         setHasOptionsMenu(true);
 
         Bundle arguments = getArguments();
@@ -59,6 +61,12 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
 
         View rootView = inflater.inflate(R.layout.fragment_proyecto, container, false);
         mTitulo = (EditText) rootView.findViewById(R.id.editText_titulo_proyecto);
+        mTitulo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                guardarProyecto();
+            }
+        });
         return rootView;
 //        return inflater.inflate(R.layout.fragment_proyecto, container, false);
     }
@@ -69,13 +77,31 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_guardar_proyecto) {
+            guardarProyecto();
+            return true;
+        }
+        if (id == R.id.action_eliminar_proyecto) {
+            eliminarProyecto();
+            getActivity().finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(PROYECTO_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+//        Log.e(LOG_TAG,"onCreateLoader");
+
         if ( null != mUri ) {
             // Now create and return a CursorLoader that will take care of
             // creating a Cursor for the data being displayed.
@@ -93,7 +119,7 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+//        Log.e(LOG_TAG,"onLoadFinished");
         if (data != null && data.moveToFirst()) {
             mTitulo.setText(data.getString(COL_PROYECTO_TITULO));
         }
@@ -103,4 +129,38 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
+    private ContentValues getValues() {
+        ContentValues values = new ContentValues();
+
+        values.put(BibliografiaContract.ProyectoEntry.COLUMN_TITULO, mTitulo.getText().toString());
+
+        return values;
+    }
+
+    public void guardarProyecto() {
+//        Uri newUri = BibliografiaContract.LibroEntry.buildLibroUri(idProyecto,idLibro);
+
+        Uri newUri = BibliografiaContract.ProyectoEntry.buildProyectoUri(
+                Utility.getPreferredIdProyecto(getActivity()));
+
+        getActivity().getContentResolver().update(
+                newUri,
+                getValues(),
+                null,
+                null
+        );
+    }
+
+    private void eliminarProyecto() {
+        Uri newUri = BibliografiaContract.ProyectoEntry.buildProyectoUri(
+                Utility.getPreferredIdProyecto(getActivity()));
+
+        getActivity().getContentResolver().delete(
+                newUri,
+                null,
+                null
+        );
+    }
+
 }

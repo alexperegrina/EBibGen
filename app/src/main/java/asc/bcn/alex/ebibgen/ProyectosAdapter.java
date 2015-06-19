@@ -3,7 +3,6 @@ package asc.bcn.alex.ebibgen;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ public class ProyectosAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView textView = (TextView) view.findViewById(R.id.list_item_proyecto_textView);
-        Log.e(LOG_TAG, cursor.toString());
+//        Log.e(LOG_TAG, cursor.toString());
 //        textView.setText(cursor.);
         String titulo = cursor.getString(ProyectosFragment.COL_PROYECTO_TITULO);
         textView.setText(titulo);

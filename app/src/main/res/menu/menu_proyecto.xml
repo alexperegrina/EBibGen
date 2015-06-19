@@ -2,6 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="asc.bcn.alex.ebibgen.ProyectoActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+    <item android:id="@+id/action_guardar_proyecto" android:title="@string/action_guardar"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_eliminar_proyecto" android:title="@string/action_eliminar"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

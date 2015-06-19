@@ -69,8 +69,10 @@ public class BibliografiaContract {
         public static final String COLUMN_PATH_IMG = "path_img";
 
 
-        public static Uri buildLibroUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+        public static Uri buildLibroUri(long idProyecto, long idLibro) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(idProyecto))
+                    .appendPath(Long.toString(idLibro)).build();
+//            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
         public static Uri buildLibroWithIdProyecto(long id) {
@@ -105,5 +107,8 @@ public class BibliografiaContract {
 
     public static String getIdProyectoFromUri(Uri uri) {
         return uri.getPathSegments().get(1);
+    }
+    public static String getIdLibroFromUri(Uri uri) {
+        return uri.getPathSegments().get(2);
     }
 }

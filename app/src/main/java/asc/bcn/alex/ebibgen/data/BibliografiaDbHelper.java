@@ -28,14 +28,14 @@ public class BibliografiaDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_LIBRO_TABLE = "CREATE TABLE " + LibroEntry.TABLE_NAME + " (" +
                 LibroEntry._ID + " INTEGER PRIMARY KEY," +
                 LibroEntry.COLUMN_ID_PROYECTO + " INTEGER NOT NULL, " +
-                LibroEntry.COLUMN_ISBN + " TEXT NOT NULL, " +
-                LibroEntry.COLUMN_TITULO + " TEXT NOT NULL, " +
+                LibroEntry.COLUMN_ISBN + " TEXT, " +
+                LibroEntry.COLUMN_TITULO + " TEXT, " +
                 LibroEntry.COLUMN_DIA + " INTEGER, " +
                 LibroEntry.COLUMN_MES + " INTEGER, " +
                 LibroEntry.COLUMN_ANO + " INTEGER, " +
-                LibroEntry.COLUMN_PAIS + " TEXT NOT NULL, " +
-                LibroEntry.COLUMN_CIUDAD + " TEXT NOT NULL, " +
-                LibroEntry.COLUMN_EDITORIAL + " TEXT NOT NULL, " +
+                LibroEntry.COLUMN_PAIS + " TEXT, " +
+                LibroEntry.COLUMN_CIUDAD + " TEXT, " +
+                LibroEntry.COLUMN_EDITORIAL + " TEXT, " +
                 LibroEntry.COLUMN_PAGINA_INI + " INTEGER, " +
                 LibroEntry.COLUMN_PAGINA_FIN + " INTEGER, " +
                 LibroEntry.COLUMN_PATH_IMG + " TEXT " +
@@ -44,7 +44,7 @@ public class BibliografiaDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_AUTOR_TABLE = "CREATE TABLE " + AutorEntry.TABLE_NAME + " (" +
                 AutorEntry._ID + " INTEGER PRIMARY KEY," +
                 AutorEntry.COLUMN_ID_LIBRO + " INTEGER NOT NULL, " +
-                AutorEntry.COLUMN_NOMBRE + " TEXT NOT NULL " +
+                AutorEntry.COLUMN_NOMBRE + " TEXT" +
                 " );";
 
         db.execSQL(SQL_CREATE_PROYECTO_TABLE);

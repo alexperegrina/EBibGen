@@ -3,6 +3,8 @@
     <string name="app_name">EBibGen</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_guardar">Guardar</string>
+    <string name="action_eliminar">Eliminar</string>
     <string name="nuevo_proyecto">Nuevo Proyecto</string>
     <string name="titulo_nuevo_proyecto">Titulo nuevo proyecto</string>
     <string name="escribir_texto_aqui">Escribir texto aqui..</string>
@@ -12,4 +14,6 @@
     <string name="libros">Libros</string>
     <string name="title_activity_libro">LibroActivity</string>
 
+    <string name="pref_proyecto_key">proyecto</string>
+    <string name="pref_libro_key">libro</string>
 </resources>

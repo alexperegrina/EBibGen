@@ -101,20 +101,21 @@ public class ProyectosFragment extends Fragment implements LoaderManager.LoaderC
                     Intent intent = new Intent(getActivity(), ProyectoActivity.class)
                             .setData(BibliografiaContract.ProyectoEntry.buildProyectoUri(
                                     cursor.getInt(COL_PROYECTO_ID)));
+//                    intent.putExtra("idProyecto",cursor.getInt(COL_PROYECTO_ID));
+                    Utility.setPreferredIdProyecto(getActivity(), cursor.getInt(COL_PROYECTO_ID));
 //                    Log.e(LOG_TAG,"listen");
                     startActivity(intent);
                 }
             }
         });
-//        listView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Log.e(LOG_TAG,"click");
-//            }
-//        });
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onUpdateProyecto();
     }
 
     @Override
