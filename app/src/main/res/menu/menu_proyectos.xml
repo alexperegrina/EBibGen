@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--<item android:id="@+id/action_nuevo_proyecto"-->
+        <!--android:title="@string/nuevo_proyecto"-->
+        <!--app:showAsAction="never"/>-->
+    <item android:id="@+id/action_new_proyecto"
+        android:icon="@drawable/ic_add_circle_outline_white_24dp"
+        android:title="@string/nuevo_proyecto"
+        app:showAsAction="ifRoom" />
+</menu>

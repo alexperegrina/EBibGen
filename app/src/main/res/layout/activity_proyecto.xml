@@ -1,0 +1,52 @@
+<!--<FrameLayout-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:id="@+id/fragment_container_proyecto"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:name="asc.bcn.alex.ebibgen.ProyectoFragment"-->
+    <!--tools:context="asc.bcn.alex.ebibgen.ProyectoFragment"-->
+    <!--tools:ignore="MergeRootFrame"-->
+    <!--/>-->
+    <!--tools:layout="@layout/fragment_proyecto"-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:orientation="vertical">
+
+    <!--
+    This layout is a two-pane layout for the Items master/detail flow.
+    -->
+
+    <!--<fragment-->
+        <!--android:id="@+id/fragment_container_proyecto"-->
+        <!--android:name="asc.bcn.alex.ebibgen.ProyectoFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1" />-->
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fragment_container_proyecto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="asc.bcn.alex.ebibgen.ProyectoFragment"
+        tools:context="asc.bcn.alex.ebibgen.ProyectoFragment"
+        tools:ignore="MergeRootFrame"/>
+
+    <FrameLayout
+        android:id="@+id/fragment_container_libro"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:name="asc.bcn.alex.ebibgen.LibrosFragment"
+        tools:context="asc.bcn.alex.ebibgen.LibrosFragment"
+        />
+    <!--android:name="asc.bcn.alex.ebibgen.LibrosFragment"-->
+    <!--tools:context="asc.bcn.alex.ebibgen.LibrosFragment"-->
+
+</LinearLayout>
