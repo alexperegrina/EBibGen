@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +34,7 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final int LIBRO_LOADER = 0;
     static final String PROYECTO_URI = "IDPROYECTO";
 
-    private static final String[] LIBRO_COLUMNS = {
+    public static final String[] LIBRO_COLUMNS = {
             BibliografiaContract.LibroEntry.TABLE_NAME + "." + BibliografiaContract.LibroEntry._ID,
             BibliografiaContract.LibroEntry.COLUMN_TITULO,
             BibliografiaContract.LibroEntry.COLUMN_DIA,
@@ -58,8 +59,6 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
     static final int COL_LIBRO_PAGINA_INI= 8;
     static final int COL_LIBRO_PAGINA_FI= 9;
     static final int COL_LIBRO_ISBN = 10;
-
-
 
     private Uri mUri;
 
@@ -154,8 +153,6 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
         mUri = BibliografiaContract.LibroEntry.buildLibroUri(idProyecto,idLibro);
 
         if ( null != mUri ) {
-            // Now create and return a CursorLoader that will take care of
-            // creating a Cursor for the data being displayed.
             return new CursorLoader(
                     getActivity(),
                     mUri,
@@ -170,9 +167,7 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-//        mLibrosAdapter.swapCursor(data);
         if (data != null && data.moveToFirst()) {
-//            mTitulo.setText(data.getString(COL_PROYECTO_TITULO));
 
             edit_titulo.setText(data.getString(COL_LIBRO_TITULO));
             if(data.getInt(COL_LIBRO_DIA) != 0) {
@@ -194,9 +189,10 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
             edit_isbn.setText(data.getString(COL_LIBRO_ISBN));
 
             ArrayList<String> paises = getPaises();
+
             int id = -1;
             for (int i = 0; i < paises.size() && id == -1; i++) {
-                if(data.getString(COL_LIBRO_PAIS) == paises.get(i)) {
+                if(data.getString(COL_LIBRO_PAIS) != null && data.getString(COL_LIBRO_PAIS).equals(paises.get(i))) {
                     id = i;
                 }
             }
@@ -226,10 +222,6 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
         Collections.sort(countries);
-//        for (String country : countries) {
-//            System.out.println(country);
-//        }
-//        System.out.println( "# countries found: " + countries.size());
         return countries;
     }
 
@@ -245,6 +237,7 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
         libroValues.put(BibliografiaContract.LibroEntry.COLUMN_PAGINA_INI, edit_pagina_ini.getText().toString());
         libroValues.put(BibliografiaContract.LibroEntry.COLUMN_PAGINA_FIN, edit_pagina_fi.getText().toString());
         libroValues.put(BibliografiaContract.LibroEntry.COLUMN_ISBN, edit_isbn.getText().toString());
+
         libroValues.put(BibliografiaContract.LibroEntry.COLUMN_PAIS, spinner_pais.getSelectedItem().toString());
 
         return libroValues;
@@ -253,6 +246,7 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
     public void guardarLibro() {
         Uri newUri = BibliografiaContract.LibroEntry.buildLibroUri(idProyecto,idLibro);
 
+        Log.e(LOG_TAG,newUri.toString());
         getActivity().getContentResolver().update(
                 newUri,
                 getValues(),
@@ -320,6 +314,14 @@ public class LibroFragment extends Fragment implements LoaderManager.LoaderCallb
 
 
     private void eliminarLibro() {
+        //hay que eliminar tambien los autores que contiene
+        Uri uriAut = BibliografiaContract.AutorEntry.buildAutorWithIdLibro(idLibro);
+        getActivity().getContentResolver().delete(
+                uriAut,
+                null,
+                null
+        );
+
         Uri newUri = BibliografiaContract.LibroEntry.buildLibroUri(idProyecto,idLibro);
 
         getActivity().getContentResolver().delete(

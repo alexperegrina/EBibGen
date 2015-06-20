@@ -1,20 +1,32 @@
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView"
+    android:orientation="vertical">
+
     <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView"
-        android:layout_gravity="center_horizontal"
-        >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1">
+        <FrameLayout
+            android:id="@+id/fragment_container_libro"
+            android:name="asc.bcn.alex.ebibgen.LibroFragment"
+            tools:layout="@layout/fragment_libro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
-    <FrameLayout
-        android:id="@+id/fragment_container_libro"
-        android:name="asc.bcn.alex.ebibgen.LibroFragment"
-        tools:layout="@layout/fragment_libro"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+    </ScrollView>
+        <FrameLayout
+            android:id="@+id/fragment_container_autores"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:name="asc.bcn.alex.ebibgen.AutoresFragment"
+            tools:context="asc.bcn.alex.ebibgen.AutoresFragment"
+             />
 
-</ScrollView>
-
+</LinearLayout>

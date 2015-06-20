@@ -23,8 +23,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="asc.bcn.alex.ebibgen.MainActivity" />
         </activity>
-
-
         <activity
             android:name=".LibroActivity"
             android:label="@string/title_activity_libro" >
@@ -33,12 +31,16 @@
                 android:value="asc.bcn.alex.ebibgen.ProyectoActivity" />
         </activity>
 
-
         <provider
             android:name=".data.BibliografiaProvider"
             android:authorities="@string/content_authority"
             android:exported="true"
             android:syncable="true" />
+
+        <activity
+            android:name=".AutorActivity"
+            android:label="@string/title_activity_autor" >
+        </activity>
     </application>
 
 </manifest>

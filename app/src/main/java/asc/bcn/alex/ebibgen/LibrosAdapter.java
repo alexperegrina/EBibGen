@@ -24,9 +24,6 @@ public class LibrosAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView textView = (TextView) view.findViewById(R.id.list_item_libro_textView);
-//        Log.e(LOG_TAG, cursor.toString());
-//        textView.setText(cursor.);
-//        String titulo = cursor.getString(ProyectosFragment.COL_PROYECTO_TITULO);
         String titulo = cursor.getString(LibrosFragment.COL_LIBRO_TITULO);
         textView.setText(titulo);
     }

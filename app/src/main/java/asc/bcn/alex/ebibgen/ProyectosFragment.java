@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,17 +37,12 @@ public class ProyectosFragment extends Fragment implements LoaderManager.LoaderC
             BibliografiaContract.ProyectoEntry.COLUMN_TITULO
     };
 
-    // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
-    // must change.
     static final int COL_PROYECTO_ID = 0;
     static final int COL_PROYECTO_TITULO = 1;
 
-
     private ProyectosAdapter mProyectoAdapter;
 
-
     private TextView resultText;
-
 
     public ProyectosFragment() {
     }
@@ -69,9 +63,6 @@ public class ProyectosFragment extends Fragment implements LoaderManager.LoaderC
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_new_proyecto) {
-//            updateWeather();
-            //Aqui tenemos que mostrar n popup para poner el nombre del proyecto,
-            // y a continuación llamar a contentProvider para insertar el nuevo proyecto
             showInputDialog();
             return true;
         }
@@ -92,18 +83,12 @@ public class ProyectosFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
-
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 if (cursor != null) {
-////                    String locationSetting = Utility.getPreferredLocation(getActivity());
-//                    Log.e(LOG_TAG,Integer.toString(cursor.getInt(COL_PROYECTO_ID)));
                     Intent intent = new Intent(getActivity(), ProyectoActivity.class)
                             .setData(BibliografiaContract.ProyectoEntry.buildProyectoUri(
                                     cursor.getInt(COL_PROYECTO_ID)));
-//                    intent.putExtra("idProyecto",cursor.getInt(COL_PROYECTO_ID));
                     Utility.setPreferredIdProyecto(getActivity(), cursor.getInt(COL_PROYECTO_ID));
-//                    Log.e(LOG_TAG,"listen");
                     startActivity(intent);
                 }
             }
@@ -159,13 +144,9 @@ public class ProyectosFragment extends Fragment implements LoaderManager.LoaderC
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-//                        resultText.setText("Hello, " + editText.getText());
-                        Log.e(LOG_TAG, editText.getText().toString());
-                        // Comprovamos que no este nulo el valor in lo insertamos en la tabla proyectos con el content
-                        //resolver. habra que actualizar la vista para que se vea reflejado.
+
 
                         addProyecto(editText.getText().toString());
-//                        mProyectoAdapter.notifyDataSetChanged();
                         onUpdateProyecto();
 
                     }
@@ -187,12 +168,11 @@ public class ProyectosFragment extends Fragment implements LoaderManager.LoaderC
         ContentValues proyectoValues = new ContentValues();
         proyectoValues.put(BibliografiaContract.ProyectoEntry.COLUMN_TITULO, titulo);
 
-        // Finally, insert location data into the database.
         Uri insertedUri = getActivity().getContentResolver().insert(
                 BibliografiaContract.ProyectoEntry.CONTENT_URI,
                 proyectoValues
         );
-        // The resulting URI contains the ID for the row.  Extract the locationId from the Uri.
+
         proyectoId = ContentUris.parseId(insertedUri);
         return proyectoId;
     }

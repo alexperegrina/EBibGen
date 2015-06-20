@@ -6,4 +6,8 @@
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_eliminar_proyecto" android:title="@string/action_eliminar"
         android:orderInCategory="100" app:showAsAction="never" />
+    <!--<item android:id="@+id/action_exportar_mla" android:title="@string/action_exportar_mla"-->
+        <!--android:orderInCategory="100" app:showAsAction="never" />-->
+    <!--<item android:id="@+id/action_exportar_apa" android:title="@string/action_exportar_apa"-->
+        <!--android:orderInCategory="100" app:showAsAction="never" />-->
 </menu>

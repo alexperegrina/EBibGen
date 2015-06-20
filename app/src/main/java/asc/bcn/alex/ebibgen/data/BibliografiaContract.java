@@ -32,12 +32,10 @@ public class BibliografiaContract {
 
         // Table name
         public static final String TABLE_NAME = "proyecto";
-
         public static final String COLUMN_TITULO = "titulo";
 
         public static Uri buildProyectoUri(long id) {
             Uri ret = ContentUris.withAppendedId(CONTENT_URI, id);
-//            Log.e("LOG_TAG", ret.toString());
             return ret;
         }
     }
@@ -72,15 +70,11 @@ public class BibliografiaContract {
         public static Uri buildLibroUri(long idProyecto, long idLibro) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(idProyecto))
                     .appendPath(Long.toString(idLibro)).build();
-//            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
         public static Uri buildLibroWithIdProyecto(long id) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
         }
-
-
-        //preguntar por idProyecto
     }
 
     // definimos la tabla para autores
@@ -98,8 +92,13 @@ public class BibliografiaContract {
         public static final String COLUMN_ID_LIBRO= "id_libro";
         public static final String COLUMN_NOMBRE = "nombre";
 
-        public static Uri buildAutorUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
+        public static Uri buildAutorUri(long idLibro, long idAutor) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(idLibro))
+                    .appendPath(Long.toString(idAutor)).build();
+        }
+
+        public static Uri buildAutorWithIdLibro(long id) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(id)).build();
         }
 
         //preguntar por idLibro
@@ -111,4 +110,14 @@ public class BibliografiaContract {
     public static String getIdLibroFromUri(Uri uri) {
         return uri.getPathSegments().get(2);
     }
+    public static String getIdLibroFromUri_pos1(Uri uri) {
+        return uri.getPathSegments().get(1);
+    }
+    public static String getIdAutorFromUri(Uri uri) {
+        return uri.getPathSegments().get(2);
+    }
+    public static String getIdAutorFromUri_pos1(Uri uri) {
+        return uri.getPathSegments().get(1);
+    }
+
 }

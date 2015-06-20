@@ -34,7 +34,9 @@ public class BibliografiaProvider extends ContentProvider {
     //autor.idLibro = ?
     private static final String sAutorIdLibro = BibliografiaContract.AutorEntry.TABLE_NAME +
             "." + BibliografiaContract.AutorEntry.COLUMN_ID_LIBRO + " = ? ";
-
+    //autor._id = ?
+    private static final String sAutorId = BibliografiaContract.AutorEntry.TABLE_NAME +
+            "." + BibliografiaContract.AutorEntry._ID + " = ? ";
 
     // Metodo para añadir al uriMatcher las uris que utilizaremos
     static UriMatcher buildUriMatcher() {
@@ -47,7 +49,8 @@ public class BibliografiaProvider extends ContentProvider {
         // libro/idProyecto/idLibro
         matcher.addURI(authority, BibliografiaContract.PATH_LIBRO + "/*/*", LIBRO);
         matcher.addURI(authority, BibliografiaContract.PATH_LIBRO + "/*", LIBRO_WITH_PROYECTO);
-        matcher.addURI(authority, BibliografiaContract.PATH_AUTOR, AUTOR);
+        //autor/idLibro/idAutor
+        matcher.addURI(authority, BibliografiaContract.PATH_AUTOR + "/*/*", AUTOR);
         matcher.addURI(authority, BibliografiaContract.PATH_AUTOR + "/*", AUTOR_WITH_LIBRO);
         return matcher;
     }
@@ -101,9 +104,7 @@ public class BibliografiaProvider extends ContentProvider {
     }
 
     private Cursor getLibroWithId(Uri uri, String[] projection, String sortOrder) {
-//        String idProyecto = BibliografiaContract.getIdProyectoFromUri(uri);
         String idLibro = BibliografiaContract.getIdLibroFromUri(uri);
-//        Log.e("su puta madreeeeee", idLibro);
         String[] selectionArgs;
         String selection;
         selection = sLibroId;
@@ -120,11 +121,27 @@ public class BibliografiaProvider extends ContentProvider {
         );
     }
 
+    private Cursor getAutorWithId(Uri uri, String[] projection, String sortOrder) {
+        String idLibro = BibliografiaContract.getIdLibroFromUri_pos1(uri);
+        String[] selectionArgs;
+        String selection;
+        selection = sAutorIdLibro;
+        selectionArgs = new String[]{idLibro};
+
+        return mOpenHelper.getReadableDatabase().query(
+                BibliografiaContract.AutorEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
-        // Here's the switch statement that, given a URI, will determine what kind of request it is,
-        // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case PROYECTO_WITH_ID:
@@ -144,27 +161,22 @@ public class BibliografiaProvider extends ContentProvider {
                 break;
             // "libro"
             case LIBRO_WITH_PROYECTO:
-                Log.e("DEBUGGGGG", "LIBRO_WITH_PRO");
                 retCursor = getLibrosWithIdProyecto(uri,projection,sortOrder);
-                Log.e("DEBUGGGGG", "LIBRO_WITH_PRO");
                 break;
             // "libro/*/*"
             case LIBRO:
-                Log.e("DEBUGGGGG", "LIBRO");
-
                 retCursor = getLibroWithId(uri,projection,sortOrder);
                 break;
 //            // "autor"
 //            case AUTOR:
 //                break;
-//            // "autor/*"
-//            case AUTOR_WITH_LIBRO:
-//                break;
+            // "autor/*"
+            case AUTOR_WITH_LIBRO:
+                retCursor = getAutorWithId(uri,projection,sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-
-
         return retCursor;
     }
 
@@ -186,7 +198,6 @@ public class BibliografiaProvider extends ContentProvider {
                 break;
             // "libro"
             case LIBRO_WITH_PROYECTO:
-                Log.e("++++++++++++++++","insert");
                 _id = db.insert(BibliografiaContract.LibroEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = BibliografiaContract.LibroEntry.buildLibroUri(values.getAsInteger(
@@ -196,11 +207,18 @@ public class BibliografiaProvider extends ContentProvider {
                 break;
 //            // "autor"
             case LIBRO:
-                Log.e("++++++++++++++++","insert2222");
                 _id = db.insert(BibliografiaContract.LibroEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = BibliografiaContract.LibroEntry.buildLibroUri(values.getAsInteger(
                             BibliografiaContract.LibroEntry.COLUMN_ID_PROYECTO),_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            case AUTOR_WITH_LIBRO:
+                _id = db.insert(BibliografiaContract.AutorEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = BibliografiaContract.AutorEntry.buildAutorUri(values.getAsInteger(
+                            BibliografiaContract.AutorEntry.COLUMN_ID_LIBRO), _id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -221,6 +239,7 @@ public class BibliografiaProvider extends ContentProvider {
 
         switch (match) {
             case LIBRO:
+                Log.e("aaaaa","libro");
                 selection = BibliografiaProvider.sLibroId;
                 selectionArgs = new String[]{BibliografiaContract.getIdLibroFromUri(uri)};
 
@@ -231,6 +250,7 @@ public class BibliografiaProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case PROYECTO_WITH_ID:
+                Log.e("aaaaa","proyeco");
                 selection = BibliografiaProvider.sProyectoId;
                 selectionArgs = new String[]{BibliografiaContract.getIdProyectoFromUri(uri)};
                 rowsUpdated = db.update(
@@ -239,10 +259,16 @@ public class BibliografiaProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 break;
-//            case LOCATION:
-//                rowsUpdated = db.update(WeatherContract.LocationEntry.TABLE_NAME, values, selection,
-//                        selectionArgs);
-//                break;
+            case AUTOR:
+                Log.e("aaaaa","autor");
+                selection = BibliografiaProvider.sAutorId;
+                selectionArgs = new String[]{BibliografiaContract.getIdAutorFromUri(uri)};
+                rowsUpdated = db.update(
+                        BibliografiaContract.AutorEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -250,8 +276,6 @@ public class BibliografiaProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
-
-//        return 0;
     }
 
     @Override
@@ -260,13 +284,20 @@ public class BibliografiaProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
-        // this makes delete all rows return the number of rows deleted
         if ( null == selection ) selection = "-1";
         switch (match) {
             case LIBRO:
-//                normalizeDate(values);
                 selection = BibliografiaProvider.sLibroId;
                 selectionArgs = new String[]{BibliografiaContract.getIdLibroFromUri(uri)};
+
+                rowsDeleted = db.delete(
+                        BibliografiaContract.LibroEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            case LIBRO_WITH_PROYECTO:
+                selection = BibliografiaProvider.sLibroIdProyecto;
+                selectionArgs = new String[]{BibliografiaContract.getIdLibroFromUri_pos1(uri)};
 
                 rowsDeleted = db.delete(
                         BibliografiaContract.LibroEntry.TABLE_NAME,
@@ -281,17 +312,22 @@ public class BibliografiaProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 break;
-
-//            case WEATHER:
-//                rowsDeleted = db.delete(
-//                        WeatherContract.WeatherEntry.TABLE_NAME,
-//                        selection,
-//                        selectionArgs);
-//                break;
-//            case LOCATION:
-//                rowsDeleted = db.delete(
-//                        WeatherContract.LocationEntry.TABLE_NAME, selection, selectionArgs);
-//                break;
+            case AUTOR:
+                selection = BibliografiaProvider.sAutorId;
+                selectionArgs = new String[]{BibliografiaContract.getIdAutorFromUri(uri)};
+                rowsDeleted = db.delete(
+                        BibliografiaContract.AutorEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            case AUTOR_WITH_LIBRO:
+                selection = BibliografiaProvider.sAutorIdLibro;
+                selectionArgs = new String[]{BibliografiaContract.getIdAutorFromUri_pos1(uri)};
+                rowsDeleted = db.delete(
+                        BibliografiaContract.AutorEntry.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

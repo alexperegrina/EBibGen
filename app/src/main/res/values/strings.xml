@@ -12,8 +12,19 @@
     <string name="titulo">Titulo:</string>
 
     <string name="libros">Libros</string>
-    <string name="title_activity_libro">LibroActivity</string>
+    <string name="title_activity_libro">Libro</string>
 
     <string name="pref_proyecto_key">proyecto</string>
+    <string name="action_exportar_mla">mla</string>
+    <string name="action_exportar_apa">apa</string>
     <string name="pref_libro_key">libro</string>
+    <string name="pref_autor_key">autor</string>
+
+
+    <string name="autores">Autores</string>
+    <string name="title_activity_autor">AutorActivity</string>
+    <string name="nombre_nuevo_autor">Nombre nuevo autor</string>
+
+    <string name="exportar_mla">Exportar MLA</string>
+    <string name="exportar_apa">Exportar APA</string>
 </resources>

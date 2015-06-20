@@ -21,12 +21,12 @@ public class BibliografiaDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         final String SQL_CREATE_PROYECTO_TABLE = "CREATE TABLE " + ProyectoEntry.TABLE_NAME + " (" +
-                ProyectoEntry._ID + " INTEGER PRIMARY KEY," +
+                ProyectoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 ProyectoEntry.COLUMN_TITULO + " TEXT NOT NULL " +
                 " );";
 
         final String SQL_CREATE_LIBRO_TABLE = "CREATE TABLE " + LibroEntry.TABLE_NAME + " (" +
-                LibroEntry._ID + " INTEGER PRIMARY KEY," +
+                LibroEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 LibroEntry.COLUMN_ID_PROYECTO + " INTEGER NOT NULL, " +
                 LibroEntry.COLUMN_ISBN + " TEXT, " +
                 LibroEntry.COLUMN_TITULO + " TEXT, " +
@@ -42,7 +42,7 @@ public class BibliografiaDbHelper extends SQLiteOpenHelper {
                 " );";
 
         final String SQL_CREATE_AUTOR_TABLE = "CREATE TABLE " + AutorEntry.TABLE_NAME + " (" +
-                AutorEntry._ID + " INTEGER PRIMARY KEY," +
+                AutorEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 AutorEntry.COLUMN_ID_LIBRO + " INTEGER NOT NULL, " +
                 AutorEntry.COLUMN_NOMBRE + " TEXT" +
                 " );";

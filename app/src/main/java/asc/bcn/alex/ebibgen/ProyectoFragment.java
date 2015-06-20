@@ -88,6 +88,14 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
             getActivity().finish();
             return true;
         }
+//        if (id == R.id.action_exportar_mla) {
+//            exportMLA(Utility.getPreferredIdProyecto(getActivity()));
+//            return true;
+//        }
+//        if (id == R.id.action_exportar_apa) {
+//
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -139,8 +147,6 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     public void guardarProyecto() {
-//        Uri newUri = BibliografiaContract.LibroEntry.buildLibroUri(idProyecto,idLibro);
-
         Uri newUri = BibliografiaContract.ProyectoEntry.buildProyectoUri(
                 Utility.getPreferredIdProyecto(getActivity()));
 
@@ -153,9 +159,54 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void eliminarProyecto() {
+        // hay que eliminar todos los libros que contiene y de cada libro los autores que contiene
+
+        String[] LIBRO_COLUMNS = {
+                BibliografiaContract.LibroEntry.TABLE_NAME + "." + BibliografiaContract.LibroEntry._ID,
+                BibliografiaContract.LibroEntry.COLUMN_TITULO
+        };
+
+
+        Uri uriLibros = BibliografiaContract.LibroEntry.buildLibroWithIdProyecto(
+                Utility.getPreferredIdProyecto(getActivity()));
+
+        Cursor cursor = getActivity().getContentResolver().query(
+                uriLibros,
+                LIBRO_COLUMNS,
+                null,
+                null,
+                null
+        );
+
+        cursor.moveToFirst();
+        Uri uriAutores;
+        int idLibro;
+        do {
+            idLibro = cursor.getInt(0);
+            uriAutores = BibliografiaContract.AutorEntry.buildAutorWithIdLibro(idLibro);
+
+            //eliminamos los autores
+            getActivity().getContentResolver().delete(
+                    uriAutores,
+                    null,
+                    null
+            );
+
+        } while (cursor.moveToNext());
+
+        //eliminamos los libros
+        getActivity().getContentResolver().delete(
+                uriLibros,
+                null,
+                null
+        );
+
+
         Uri newUri = BibliografiaContract.ProyectoEntry.buildProyectoUri(
                 Utility.getPreferredIdProyecto(getActivity()));
 
+
+        // eliminamos proyecto
         getActivity().getContentResolver().delete(
                 newUri,
                 null,
@@ -163,4 +214,92 @@ public class ProyectoFragment extends Fragment implements LoaderManager.LoaderCa
         );
     }
 
+//    private void exportMLA(int idProyecto) {
+//
+////        String[] LIBRO_COLUMNS = {
+////                BibliografiaContract.LibroEntry.TABLE_NAME + "." + BibliografiaContract.LibroEntry._ID,
+////                BibliografiaContract.LibroEntry.COLUMN_TITULO,
+////                BibliografiaContract.LibroEntry.COLUMN_DIA,
+////                BibliografiaContract.LibroEntry.COLUMN_MES,
+////                BibliografiaContract.LibroEntry.COLUMN_ANO,
+////                BibliografiaContract.LibroEntry.COLUMN_PAIS,
+////                BibliografiaContract.LibroEntry.COLUMN_CIUDAD,
+////                BibliografiaContract.LibroEntry.COLUMN_EDITORIAL,
+////                BibliografiaContract.LibroEntry.COLUMN_PAGINA_INI,
+////                BibliografiaContract.LibroEntry.COLUMN_PAGINA_FIN,
+////                BibliografiaContract.LibroEntry.COLUMN_ISBN
+////        };
+////
+////        int COL_LIBRO_ID = 0;
+////        int COL_LIBRO_TITULO = 1;
+////        int COL_LIBRO_DIA = 2;
+////        int COL_LIBRO_MES = 3;
+////        int COL_LIBRO_ANO = 4;
+////        int COL_LIBRO_PAIS = 5;
+////        int COL_LIBRO_CIUDAD= 6;
+////        int COL_LIBRO_EDITORIAL = 7;
+////        int COL_LIBRO_PAGINA_INI= 8;
+////        int COL_LIBRO_PAGINA_FI= 9;
+////        int COL_LIBRO_ISBN = 10;
+//
+//        Log.e(LOG_TAG, "INICIO MLA");
+//        Cursor cursorAutores;
+//        String bibliografia = "";
+//        String autores;
+//
+//        String sortOrder = BibliografiaContract.LibroEntry.COLUMN_TITULO + " ASC";
+//        Uri uriLibros = BibliografiaContract.LibroEntry.buildLibroWithIdProyecto(idProyecto);
+//        Cursor cursorLibros = getActivity().getContentResolver().query(
+//          uriLibros,
+//                LibroFragment.LIBRO_COLUMNS,null,null,null
+//        );
+//
+//
+//        Log.e(LOG_TAG, "MLA 1");
+//        cursorLibros.moveToFirst();
+//        Uri uriAutores;
+//        int idLibro;
+//        do {
+//            Log.e(LOG_TAG, "MLA 2");
+//            autores = "";
+//            idLibro = cursorLibros.getInt(0);
+//            uriAutores = BibliografiaContract.AutorEntry.buildAutorWithIdLibro(idLibro);
+//            Log.e(LOG_TAG,uriAutores.toString());
+//
+//            cursorAutores =  getActivity().getContentResolver().query(
+//                    uriAutores,
+//                    AutoresFragment.AUTOR_COLUMNS,
+//                    null,
+//                    null,
+//                    null
+//            );
+//            cursorAutores.moveToFirst();
+//            do {
+//                Log.e(LOG_TAG, "MLA 3");
+//                autores.concat(cursorAutores.getString(AutoresFragment.COL_AUTOR_NOMBRE).concat(", "));
+//                Log.e(LOG_TAG, "MLA 3.5");
+//            } while (cursorAutores.moveToNext());
+//
+//            Log.e(LOG_TAG, "MLA 4");
+//            bibliografia += autores + ": " + cursorLibros.getString(LibroFragment.COL_LIBRO_TITULO) + ": "
+//                    + cursorLibros.getString(LibroFragment.COL_LIBRO_PAIS) + ": " +
+//                    cursorLibros.getString(LibroFragment.COL_LIBRO_EDITORIAL) + ", " +
+//                    Integer.toString(cursorLibros.getInt(LibroFragment.COL_LIBRO_ANO)) + ". ";
+//            Log.e(LOG_TAG, "MLA 4");
+//            if(cursorLibros.getInt(LibroFragment.COL_LIBRO_PAGINA_INI) != 0) {
+//                bibliografia += Integer.toString(
+//                        cursorLibros.getInt(LibroFragment.COL_LIBRO_PAGINA_INI))
+//                        + " - " +
+//                        Integer.toString(cursorLibros.getInt(LibroFragment.COL_LIBRO_PAGINA_FI));
+//            }
+//
+//            Log.e(LOG_TAG, "MLA 5");
+//            bibliografia += "\n";
+//
+//        } while (cursorLibros.moveToNext());
+//
+//        Log.e(LOG_TAG, "MLA 6");
+//        Log.e(LOG_TAG, bibliografia);
+//
+//    }
 }

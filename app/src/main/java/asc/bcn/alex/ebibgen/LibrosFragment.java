@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +34,11 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
     private LibrosAdapter mLibrosAdapter;
     private Uri mUri;
 
+    ImageButton imageAddLibro;
 
     public LibrosFragment() {
         // Required empty public constructor
     }
-
-    ImageButton imageAddLibro;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,11 +56,7 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
             mUri = arguments.getParcelable(ProyectoFragment.PROYECTO_URI);
         }
 
-
         mLibrosAdapter = new LibrosAdapter(getActivity(),null,0);
-
-
-
 
         ListView listLibros = (ListView) rootView.findViewById(R.id.listView_libros);
         listLibros.setAdapter(mLibrosAdapter);
@@ -71,13 +65,6 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 if (cursor != null) {
-                    // Inicialicamos el intent para editar el libro seleccionado.
-
-//                    Intent intent = new Intent(getActivity(), ProyectoActivity.class)
-//                            .setData(BibliografiaContract.ProyectoEntry.buildProyectoUri(
-//                                    cursor.getInt(COL_PROYECTO_ID)));
-//                    startActivity(intent);
-
                     Intent intent = new Intent(getActivity(), LibroActivity.class);
                     Utility.setPreferredIdLibro(getActivity(), cursor.getInt(COL_LIBRO_ID));
                     startActivity(intent);
@@ -119,14 +106,13 @@ public class LibrosFragment extends Fragment implements LoaderManager.LoaderCall
 
         Uri librosUri = BibliografiaContract.LibroEntry.buildLibroWithIdProyecto(Long.parseLong(idProyecto));
 
-        Log.e(LOG_TAG, librosUri.toString());
+
         return new CursorLoader(getActivity(),
                 librosUri,
                 LIBRO_COLUMNS,
                 null,
                 null,
                 sortOrder);
-//        return null;
     }
 
     @Override
